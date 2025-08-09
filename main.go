@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	//"github.com/google/uuid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
+	//"github.com/pborman/uuid"
 	//routers "simple-go-api/routers/v1"
 )
 
@@ -16,8 +16,6 @@ func main() {
 
 	r.Run("localhost:3001")
 }
-
-/* ------------------------- */
 
 func appRoutes(router *gin.Engine) *gin.RouterGroup {
 	taskController := newTaskController()
@@ -32,7 +30,6 @@ func appRoutes(router *gin.Engine) *gin.RouterGroup {
 
 }
 
-/*-----------------------------------------------------------*/
 type taskController struct {
 	tasks []Task
 }
@@ -61,14 +58,13 @@ func (tc *taskController) deleteTask(cxt *gin.Context) {
 	for idx, task := range tc.tasks {
 		if task.ID == id {
 			tc.tasks = append(tc.tasks[0:idx], tc.tasks[idx+1:]...)
-			cxt.JSON(http.StatusOK, tc.tasks)
+			cxt.JSON(http.StatusOK, gin.H{"message": "Task deleted successfully"})
 			return
 		}
 	}
-	cxt.JSON(http.StatusOK, tc.tasks)
+	cxt.JSON(http.StatusNotFound, gin.H{"message": "Task not found"})
 }
 
-/*-----------------  */
 type Task struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
@@ -78,7 +74,7 @@ type Task struct {
 
 func newTask() *Task {
 	task := Task{
-		ID: uuid.New(),
+		ID: uuid.New().String(),
 	}
 	return &task
 }
